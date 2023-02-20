@@ -3,7 +3,8 @@ const request = require('supertest');
 const testData = require("../db/data/test-data/index.js")
 const developmentData = require("../db/data/development-data/index")
 const db = require("../db/connection")
-const seed = require("../db/seeds/seed.js")
+const seed = require("../db/seeds/seed.js");
+const categories = require('../db/data/test-data/categories.js');
 
 
 beforeEach(() => seed(testData))
@@ -17,18 +18,17 @@ describe("Get Categories - returns slug and category data", () => {
         .then(({body}) => {
             expect(Array.isArray(body.categories)).toBe(true);
             expect(body.categories.length).toBe(4);
+            
+            body.categories.forEach((category) => {
+                expect(category).toHaveProperty('slug', expect.any(String))
+                expect(category).toHaveProperty('description', expect.any(String))
+        
+            })
             expect(body.categories[2].slug).toBe("dexterity");
             expect(body.categories[2].description).toBe("Games involving physical skill");
          })
         })
-    // test("Returns the correct information in type and value", () => {
-    //     return request(app)
-    //     .get("/api/categories")
-    //     .expect(200)
-    //     .then(({body}) => {
-    //         expect(body.categories[2].slug).toBe("dexterity");
-    //         expect(body.categories[2].description).toBe("Games involving physical skill");
-    //     })
-    // })
+ 
+
 })
 

@@ -1,0 +1,11 @@
+
+exports.handle500Statuses = (error, request, response, next) => {
+  console.log(error);
+  response.status(500).send({ msg: "Error detected!" });
+};
+
+exports.handle404Statuses = (error, request, response, next) => {
+    console.log(error);
+    response.status(404).send({ msg: "Error detected - page not found!" });
+  };
+
