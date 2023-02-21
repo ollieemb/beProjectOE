@@ -11,7 +11,6 @@ exports.selectReviews = () => {
     ORDER BY reviews.created_at DESC;
     `
 return db.query(queryStr).then((result) => {
-console.log(result.rows);
 return result.rows
 })
 }
