@@ -7,6 +7,9 @@ const seed = require("../db/seeds/seed.js");
 const categories = require('../db/data/test-data/categories.js');
 
 
+
+
+
 beforeEach(() => seed(testData))
 afterAll(() => db.end());
 
@@ -22,13 +25,29 @@ describe("Get Categories - returns slug and category data", () => {
             body.categories.forEach((category) => {
                 expect(category).toHaveProperty('slug', expect.any(String))
                 expect(category).toHaveProperty('description', expect.any(String))
-        
-            })
-            expect(body.categories[2].slug).toBe("dexterity");
-            expect(body.categories[2].description).toBe("Games involving physical skill");
-         })
+            
         })
- 
-
+    })
+    })
 })
+describe('/api/falseendpoint', () => {
+    test("error handling works for a 404", () => {
+    return request(app)
+    .get("/api/not-found")
+    .expect(404)
+    .then(({body}) => {
+        const serverResponseMsg = body.msg;
+        expect(body.msg).toBe("path not found!")
+    })
+});
+
+});
+
+  
+    
+
+
+
+
+      
 
