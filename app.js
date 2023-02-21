@@ -3,7 +3,6 @@ const app = express();
 const {getCategories} = require("./controllers/categoriesControllers")
 const {handle500Statuses, handle404Statuses } = require("./controllers/errorHandlingControllers")
 
-app.use(express.json());
 
 
 app.get("/api/categories", getCategories)
