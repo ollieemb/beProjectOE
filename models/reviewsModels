@@ -1,0 +1,18 @@
+const db = require("../db/connection");
+
+
+exports.selectReviews = () => {
+    let queryStr = 
+    `SELECT title, designer, owner, review_img_url, reviews.votes, category, reviews.created_at, COUNT (body) AS comment_count
+    FROM reviews
+    LEFT JOIN comments
+    ON reviews.review_ID = comments.review_id
+    GROUP BY reviews.review_ID
+    ORDER BY reviews.created_at DESC;
+    `
+return db.query(queryStr).then((result) => {
+return result.rows
+})
+}
+
+
