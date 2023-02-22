@@ -6,12 +6,13 @@ const db = require("../db/connection")
 const seed = require("../db/seeds/seed.js");
 const categories = require('../db/data/test-data/categories.js');
 const reviews = require('../db/data/test-data/reviews.js')
+const comments = require('../db/data/test-data/comments.js')
 
 
 
 
 
-beforeEach(() => seed(testData, developmentData, categories, reviews))
+beforeEach(() => seed(testData, developmentData, categories, reviews, comments))
 afterAll(() => db.end());
 
 describe("Get Categories - returns slug and category data", () => {
@@ -44,7 +45,7 @@ describe('/api/falseendpoint', () => {
 });
 
 describe("get/api/reviews", () => {
-    test.only("getReviews returns array of reviews and a comment count", () => {
+    test("getReviews returns array of reviews and a comment count", () => {
         return request(app)
         .get("/api/reviews")
         .expect(200)
@@ -52,8 +53,6 @@ describe("get/api/reviews", () => {
             expect(Array.isArray(body.reviews)).toBe(true);
            expect(body.reviews.length).toBe(13);
            expect(body.reviews).toBeSortedBy('created_at', {descending : true});
-
-            
            body.reviews.forEach(review => {
             expect(review).toEqual(expect.objectContaining({
                 title: expect.any(String),
@@ -70,6 +69,61 @@ describe("get/api/reviews", () => {
     })
 }) 
 })
+
+describe.only('GET /api/reviews/:review_id', () => {
+    test('responds with 200 and the specified review', () => {
+      return request(app)
+        .get('/api/reviews/2')
+        .expect(200)
+        .then(({body}) => {
+          const {review} = body
+          console.log(review);
+          expect(Array.isArray(review)).toBe(true);
+          expect(review).toHaveLength(1);
+          review.forEach((review) => {
+            expect(review).toEqual(
+              expect.objectContaining({
+                owner: 'philippaclaire9',
+                title: 'Jenga',
+                review_id: 2,
+                designer: 'Leslie Scott',
+                review_img_url:
+                'https://images.pexels.com/photos/4473494/pexels-photo-4473494.jpeg?w=700&h=700',
+                category: 'dexterity',
+                created_at:  expect.any(String),
+                review_body: 'Fiddly fun for all the family',
+                votes: 5
+              })
+            );
+          });
+        });
+    });
+      test("Returns 404 for number with no match", () => {
+        return request(app)
+        .get("/api/reviews/999")
+        .expect(404)
+        .then(({body}) => {
+          expect(body.msg).toBe("Not Found")
+        })
+      })
+     test("Returns 400", () => {
+        return request(app)
+        .get("/api/reviews/$$")
+        .expect(400)
+        .then(({body}) => {
+          expect(body.msg).toBe("Invalid ID")
+        })
+     })
+
+
+
+  })
+  
+
+        
+    
+    
+
 
 
     
