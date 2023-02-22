@@ -106,7 +106,7 @@ describe.only('GET /api/reviews/:review_id', () => {
           expect(body.msg).toBe("Not Found")
         })
       })
-     test("Returns 400", () => {
+     test("Returns 400 invalid path", () => {
         return request(app)
         .get("/api/reviews/$$")
         .expect(400)
@@ -114,10 +114,9 @@ describe.only('GET /api/reviews/:review_id', () => {
           expect(body.msg).toBe("Invalid ID")
         })
      })
+})
 
 
-
-  })
   
 
         
