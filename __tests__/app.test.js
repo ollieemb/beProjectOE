@@ -70,7 +70,7 @@ describe("get/api/reviews", () => {
 }) 
 })
 
-describe.only('GET /api/reviews/:review_id', () => {
+describe('GET /api/reviews/:review_id', () => {
     test('responds with 200 and the specified review', () => {
       return request(app)
         .get('/api/reviews/2')
@@ -115,6 +115,47 @@ describe.only('GET /api/reviews/:review_id', () => {
         })
      })
 })
+
+describe.only('GET/api/reviews/:review_id/comments', () => {
+  test('responds with an array of comments and 200', () => {
+    return request(app)
+    .get('/api/reviews/3/comments')
+    .expect(200)
+    .then((response) => {
+      const {comments} = response.body;
+      expect(Array.isArray(comments)).toBe(true);
+      comments.forEach((comment) => {
+        expect(comment).toEqual(
+          expect.objectContaining({
+            comment_id: expect.any(Number),
+            review_id: expect.any(Number),
+            votes: expect.any(Number),
+            created_at: expect.any(String),
+            author: expect.any(String),
+            body: expect.any(String)
+          })
+        )
+      })
+    })
+  })
+  test('responds with 404 when invalid ID', () => {
+    return request(app)
+    .get('/api/reviews/999/comments')
+    .expect(404)
+    .then((res) => {
+      expect(res.body.msg).toEqual('Please insert valid Review_ID')
+    })
+  })
+
+  test('Responds with 400 when invalid path', () => {
+    return request(app)
+    .get('/api/reviews/$$/comments')
+      .expect(400)
+      .then((res) => {
+        expect(res.body.msg).toEqual('Request Unavailable')
+      })
+    })
+  })
 
 
   
