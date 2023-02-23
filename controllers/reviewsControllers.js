@@ -33,11 +33,16 @@ exports.getComments = (request, response, next) => {
     next(error));
 };
 
-
 exports.postComment = (request, response, next) => {
     const { review_id } = request.params;
     const { username, body } = request.body || {}; 
-    if (!request.body || !request.body.username) {
+    if (!body) {
+      return next({
+        status: 400,
+        msg: 'Please provide valid body request'
+      });
+    }
+    if (!username) {
       return next({
         status: 400,
         msg: 'Please provide a valid username'
@@ -50,8 +55,8 @@ exports.postComment = (request, response, next) => {
         console.log(review_id);
       })
       .catch((err) => { 
-      console.log(err);
-next(err)});
-};
+        next(err)});
+  };
   
   
+
