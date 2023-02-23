@@ -5,6 +5,9 @@ const {handle500Statuses, handle404Statuses, handleCustomErrors, handle400Errors
 const {getReviews} = require("./controllers/reviewsControllers")
 const {getReviewID} = require("./controllers/reviewsControllers")
 const {getComments} = require("./controllers/reviewsControllers")
+const {postComment} = require("./controllers/reviewsControllers")
+
+app.use(express.json())
 
 
 
@@ -14,16 +17,19 @@ app.get("/api/reviews", getReviews);
 app.get("/api/reviews/:review_id", getReviewID);
 app.get("/api/reviews/:review_id/comments", getComments);
 
+app.post("/api/reviews/:review_id/comments", postComment)
+
 
 
 app.use((request, response, next) => {
     response.status(404).send({msg: 'path not found!'})
 })
 
-app.use(handle404Statuses);
-app.use(handle500Statuses);
-app.use(handle400Errors);
 app.use(handleCustomErrors);
+app.use(handle404Statuses);
+app.use(handle400Errors);
+app.use(handle500Statuses);
+
 
 
 
