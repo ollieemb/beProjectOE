@@ -116,7 +116,7 @@ describe('GET /api/reviews/:review_id', () => {
      })
 })
 
-describe.only('GET/api/reviews/:review_id/comments', () => {
+describe('GET/api/reviews/:review_id/comments', () => {
   test('responds with an array of comments and 200', () => {
     return request(app)
     .get('/api/reviews/3/comments')

@@ -47,32 +47,27 @@ exports.selectReview = (id) => {
 
 exports.selectComments = (review_id) => {
     const idNum = parseInt(review_id);
-    if (!Number.isNaN(idNum)) {
-        return db
-        .query(`
-        SELECT * FROM reviews WHERE review_id = $1;
+    if (Number.isNaN(idNum)) {
+        return Promise.reject({
+          status: 400,
+          msg: 'Request Unavailable'
+        });
+      }
+      return db.query(`
+          SELECT * FROM reviews WHERE review_id = $1;
         `, [review_id])
         .then((result) => {
-            if(result.rows.length === 0) {
-                return Promise.reject({
-                    status: 404,
-                    msg: 'Please insert valid Review_ID'
-                });
-            } else {
-                return db
-            .query(`
-            SELECT * FROM comments WHERE review_id = $1
+          if (result.rows.length === 0) {
+            return Promise.reject({
+              status: 404,
+              msg: 'Please insert valid Review_ID'
+            });
+          }
+          return db.query(`
+              SELECT * FROM comments WHERE review_id = $1;
             `, [review_id])
             .then((response) => {
-                return response.rows
-              })
-            }
-        })
-        } else {
-            return Promise.reject({
-                status: 400,
-                msg: 'Request Unavailable'
-            })
-        }
-    };
-
+              return response.rows;
+            });
+        });
+    }
