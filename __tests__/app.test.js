@@ -77,7 +77,6 @@ describe('GET /api/reviews/:review_id', () => {
         .expect(200)
         .then(({body}) => {
           const {review} = body
-          console.log(review);
           expect(Array.isArray(review)).toBe(true);
           expect(review).toHaveLength(1);
           review.forEach((review) => {
@@ -158,7 +157,102 @@ describe('GET/api/reviews/:review_id/comments', () => {
   })
 
 
-  
+
+describe.only('POST /api/reviews/:review_id/comments', () => {
+  test('responds with 201 and posted comment', () => {
+    return request(app)
+      .post('/api/reviews/3/comments')
+      .send({ username: 'bainesface', body: 'EPIC board game!!'})
+      .expect(201)
+      .then((res) => {
+        const { comment } = res.body;
+        console.log(comment);
+        expect(typeof comment).toBe('object');
+        expect(comment).toHaveLength(1);
+        comment.forEach((result) => {
+          expect(result).toEqual(
+            expect.objectContaining({
+              comment_id: expect.any(Number),
+              votes: expect.any(Number),
+              created_at: expect.any(String),
+              author: expect.any(String),
+              body: expect.any(String)
+            })
+          );
+        });
+      });
+    })
+    test('Responds with 404 if no ID match', () => {
+      return request(app)
+      .post('/api/reviews/999/comments')
+      .send({ username: 'bainesface', body: 'EPIC board game!!' })
+      .expect(404)
+      .then((res) => {
+        expect(res.body.msg).toEqual("Please provide a valid review_id");
+      })
+    })
+    test('Responds with 404 if no username match', () => {
+      return request(app)
+      .post('/api/reviews/3/comments')
+      .send({ username: 'Suuuuuiiiii', body: 'EPIC board game!!' })
+      .expect(404)
+      .then((res) => {
+        expect(res.body.msg).toEqual('Invalid Username');
+      });
+    });
+    test('Responds with 400 if invalid ID type', () => {
+      return request(app)
+      .post('/api/reviews/$$/comments')
+      .send({ username: 'bainesface', body: 'EPIC board game!!' })
+      .expect(400)
+      .then((res) => {
+        expect(res.body.msg).toEqual('Bad request');
+      })
+    })
+    test('responds with 201 and ignores distractions', () => {
+      return request(app)
+        .post('/api/reviews/3/comments')
+        .send({ username: 'bainesface', body: 'EPIC board game!!', distraction: 'Suuuuuiiiii'})
+        .expect(201)
+        .then((res) => {
+          const { comment } = res.body;
+          console.log(comment);
+          expect(typeof comment).toBe('object');
+          expect(comment).toHaveLength(1);
+          comment.forEach((result) => {
+            expect(result).toEqual(
+              expect.objectContaining({
+                comment_id: expect.any(Number),
+                votes: expect.any(Number),
+                created_at: expect.any(String),
+                author: expect.any(String),
+                body: expect.any(String)
+              })
+            );
+          });
+        });
+});
+test('Responds with 400 if missing body property', () => {
+  return request(app)
+  .post('/api/reviews/3/comments')
+  .send({ username: 'bainesface', incomplete: 'incomplete' })
+  .expect(400)
+  .then((res) => {
+    expect(res.body.msg).toEqual('Please provide valid body request');
+  })
+})
+test('Responds with 400 if missing body property', () => {
+  return request(app)
+  .post('/api/reviews/3/comments')
+  .send({ username: '' , body: 'valid' })
+  .expect(400)
+  .then((res) => {
+    expect(res.body.msg).toEqual('Please provide a valid username');
+  })
+})
+
+
+})
 
         
     
