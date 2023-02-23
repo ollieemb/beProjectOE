@@ -244,7 +244,7 @@ test('Responds with 400 if missing body property', () => {
 test('Responds with 400 if missing body property', () => {
   return request(app)
   .post('/api/reviews/3/comments')
-  .send({ NoUsername: 'Suuuuuiiiii' , body: 'valid' })
+  .send({ username: '' , body: 'valid' })
   .expect(400)
   .then((res) => {
     expect(res.body.msg).toEqual('Please provide a valid username');
