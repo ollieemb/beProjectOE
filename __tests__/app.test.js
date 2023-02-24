@@ -277,7 +277,6 @@ describe.only("PATCH /api/reviews/:review_id", () => {
             votes: expect.any(Number),
             category: expect.any(String),
             created_at: expect.any(String),
-            votes: expect.any(Number),
             review_id: expect.any(Number),
             review_body: expect.any(String)
           }
