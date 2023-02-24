@@ -2,8 +2,6 @@ const db = require("../db/connection");
 
 exports.selectReviews = (category, sortBy = 'created_at', order = 'desc') => {
   
-  console.log('selectReviews called with:', { category, sortBy, order });
-
   
   const validSortByColumns = ['title', 'designer', 'owner', 'votes', 'category', 'created_at'];
   if (!validSortByColumns.includes(sortBy)) {
