@@ -1,13 +1,18 @@
 const db = require("../db/connection");
 
-exports.selectReviews = (category, sortBy = 'created_at', order = 'desc') => {
-  
-  
-  const validSortByColumns = ['title', 'designer', 'owner', 'votes', 'category', 'created_at'];
+exports.selectReviews = (category, sortBy = "created_at", order = "desc") => {
+  const validSortByColumns = [
+    "title",
+    "designer",
+    "owner",
+    "votes",
+    "category",
+    "created_at",
+  ];
   if (!validSortByColumns.includes(sortBy)) {
     throw new Error(`Invalid sortBy column: ${sortBy}`);
   }
-  if (order !== 'asc' && order !== 'desc') {
+  if (order !== "asc" && order !== "desc") {
     throw new Error(`Invalid order value: ${order}`);
   }
 
@@ -34,15 +39,24 @@ exports.selectReviews = (category, sortBy = 'created_at', order = 'desc') => {
 
   queryStr += `
     GROUP BY
-      reviews.review_id
+      reviews.review_id`;
+
+  if (category) {
+    queryStr += `, category`;
+  }
+
+  queryStr += `
     ORDER BY
       ${sortBy} ${order}`;
 
   return db.query(queryStr, values).then((result) => {
-    return result.rows;
+    const rows = result.rows;
+    if (rows.length === 0 && category) {
+      throw new Error("Topic not found");
+    }
+    return rows;
   });
 };
-
 
 
 exports.selectReview = (id) => {
