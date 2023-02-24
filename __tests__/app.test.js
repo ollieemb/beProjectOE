@@ -262,7 +262,7 @@ describe("PATCH /api/reviews/:review_id", () => {
         expect(typeof body).toBe("object");
       });
   });
-  test('responds 200 with the updated vote count', () => {
+  test('responds 200 with the correct body of information', () => {
     return request(app)
       .patch('/api/reviews/3')
       .send({ inc_votes: 1 })
