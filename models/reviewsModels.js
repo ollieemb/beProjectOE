@@ -106,7 +106,6 @@ exports.addComment = (review_id, username, body) => {
               });
           })
           .catch((err) => {
-            console.log(err);
             throw err;
           });
       };
@@ -140,5 +139,18 @@ return db.query(`
     }
 
     return result.rows[0];
+    });
+};
+
+exports.selectUsers = () => {
+  return db
+    .query(`
+      SELECT * FROM users;
+    `)
+    .then((result) => {
+      return result.rows;
+    })
+    .catch((err) => {
+      throw err;
     });
 };

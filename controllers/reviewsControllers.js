@@ -3,6 +3,7 @@ const {selectReview} = require("../models/reviewsModels");
 const {selectComments} = require("../models/reviewsModels");
 const {addComment} = require("../models/reviewsModels"); 
 const {updateReviewVotes} = require("../models/reviewsModels");
+const {selectUsers} = require("../models/reviewsModels");
 
 
 
@@ -51,9 +52,7 @@ exports.postComment = (request, response, next) => {
     }
     addComment(review_id, username, body)
       .then((result) => {
-        console.log(result);
         response.status(201).send({ comment: result });
-        console.log(review_id);
       })
       .catch((err) => { 
         next(err)});
@@ -70,5 +69,16 @@ updateReviewVotes(review_id, inc_votes)
      .catch((err) => next(err));
   }
   
+exports.getUsers = (request, response, next) => {
+    const {query} = request.query;
 
+    selectUsers(query)
+    .then((users) => {
+        response.status(200).send({users});
+    })
+    .catch((err) => {
+        console.log(err);
+        next(err);
+    })
+}
  

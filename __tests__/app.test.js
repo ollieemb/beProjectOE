@@ -9,9 +9,6 @@ const reviews = require('../db/data/test-data/reviews.js')
 const comments = require('../db/data/test-data/comments.js')
 
 
-
-
-
 beforeEach(() => seed(testData, developmentData, categories, reviews, comments))
 afterAll(() => db.end());
 
@@ -164,7 +161,6 @@ describe('POST /api/reviews/:review_id/comments', () => {
       .expect(201)
       .then((res) => {
         const { comment } = res.body;
-        console.log(comment);
         expect(typeof comment).toBe('object');
         expect(comment).toHaveLength(1);
         comment.forEach((result) => {
@@ -214,7 +210,6 @@ describe('POST /api/reviews/:review_id/comments', () => {
         .expect(201)
         .then((res) => {
           const { comment } = res.body;
-          console.log(comment);
           expect(typeof comment).toBe('object');
           expect(comment).toHaveLength(1);
           comment.forEach((result) => {
@@ -381,20 +376,25 @@ test('Returns 400 if missing property', () => {
       })
       })
 })
-    
- 
-    
 
-
-
-    
-
-
-  
-    
-
-
-
-
-      
-
+describe("GET /api/users", () => {
+  test(" returns a 200 status with the users array", () => {
+    return request(app)
+      .get("/api/users")
+      .expect(200)
+      .then((res) => {
+        const {users} = res.body
+        expect(Array.isArray(users)).toBe(true);
+        expect(users).toHaveLength(4);
+        users.forEach((user) => {
+          expect(user).toEqual(
+            expect.objectContaining({
+              username: expect.any(String),
+              name: expect.any(String),
+              avatar_url: expect.any(String)
+            })
+          )
+        })
+      })
+  })     
+})
