@@ -7,6 +7,7 @@ const {getReviewID} = require("./controllers/reviewsControllers")
 const {getComments} = require("./controllers/reviewsControllers")
 const {postComment} = require("./controllers/reviewsControllers")
 const {patchReviews} = require("./controllers/reviewsControllers")
+const {getUsers} = require("./controllers/reviewsControllers")
 
 app.use(express.json())
 
@@ -21,6 +22,8 @@ app.get("/api/reviews/:review_id/comments", getComments);
 app.post("/api/reviews/:review_id/comments", postComment);
 
 app.patch("/api/reviews/:review_id", patchReviews);
+
+app.get("/api/users", getUsers);
 
 
 
