@@ -111,5 +111,34 @@ exports.addComment = (review_id, username, body) => {
           });
       };
       
-      
-      
+exports.updateReviewVotes = (review_id, inc_votes) => {
+const idNum = parseInt(review_id);
+
+if (Number.isNaN(idNum)) {
+    return Promise.reject({
+    status: 400,
+    msg: 'Bad request'
+    });
+}
+
+if (typeof inc_votes !== 'number') {
+    return Promise.reject({
+    status: 400,
+    msg: 'Invalid request'
+    });
+}
+
+return db.query(`
+    UPDATE reviews SET votes = votes + $1 WHERE review_id = $2 RETURNING *;
+`, [inc_votes, review_id])
+    .then((result) => {
+    if (result.rows.length === 0) {
+        return Promise.reject({
+        status: 404,
+        msg: 'Review not found'
+        });
+    }
+
+    return result.rows[0];
+    });
+};

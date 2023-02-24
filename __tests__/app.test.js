@@ -156,9 +156,7 @@ describe('GET/api/reviews/:review_id/comments', () => {
     })
   })
 
-
-
-describe.only('POST /api/reviews/:review_id/comments', () => {
+describe('POST /api/reviews/:review_id/comments', () => {
   test('responds with 201 and posted comment', () => {
     return request(app)
       .post('/api/reviews/3/comments')
@@ -254,14 +252,142 @@ test('Responds with 400 if missing body property', () => {
 
 })
 
-        
+describe.only("PATCH /api/reviews/:review_id", () => {
+  test(" returns a 200 status with the review item", () => {
+    return request(app)
+      .patch("/api/reviews/2")
+      .send({ inc_votes: 10 })
+      .expect(200)
+      .then(({ body }) => {
+        expect(typeof body).toBe("object");
+      });
+  });
+  test('responds 200 with required data from reviews', () => {
+    return request(app)
+      .patch('/api/reviews/3')
+      .send({ inc_votes: 1 })
+      .expect(200)
+      .then((res) => {
+        expect(res.body).toEqual({
+          updated_review: {
+            title: expect.any(String),
+            designer: expect.any(String),
+            owner: expect.any(String),
+            review_img_url: expect.any(String),
+            votes: expect.any(Number),
+            category: expect.any(String),
+            created_at: expect.any(String),
+            review_id: expect.any(Number),
+            review_body: expect.any(String)
+          }
+        });
+       })
+  })
+  test('Responds 200 and updates votes (positive vote count)', () => {
+    return request(app)
+    .patch("/api/reviews/2")
+    .send({inc_votes: 7})
+    .expect(200)
+    .then((res) => {
+    expect(res.body).toEqual({
+      updated_review: {
+        owner: 'philippaclaire9',
+                title: 'Jenga',
+                review_id: 2,
+                designer: 'Leslie Scott',
+                review_img_url:
+                'https://images.pexels.com/photos/4473494/pexels-photo-4473494.jpeg?w=700&h=700',
+                category: 'dexterity',
+                owner: expect.any(String),
+                created_at:  expect.any(String),
+                review_body: 'Fiddly fun for all the family',
+                review_body: expect.any(String),
+                votes: 12
+      }
+    })
+  })
+  })
+  test('Responds 200 and updates votes (negative vote count)', () => {
+    return request(app)
+    .patch("/api/reviews/2")
+    .send({inc_votes: -7})
+    .expect(200)
+    .then((res) => {
+    expect(res.body).toEqual({
+      updated_review: {
+        owner: 'philippaclaire9',
+                title: 'Jenga',
+                review_id: 2,
+                designer: 'Leslie Scott',
+                review_img_url:
+                'https://images.pexels.com/photos/4473494/pexels-photo-4473494.jpeg?w=700&h=700',
+                category: 'dexterity',
+                owner: expect.any(String),
+                created_at:  expect.any(String),
+                review_body: 'Fiddly fun for all the family',
+                review_body: expect.any(String),
+                votes: -2
+      }
+    })
+ })
+  })
+  test('Returns 200, correct vote count and ignores distractions', () => {
+    return request(app)
+    .patch("/api/reviews/7")
+    .send({inc_votes: 7, distraction: 'Suuuuuiiiii'})
+    .expect(200)
+    .then((res) => {
+      expect(res.body).toEqual({
+        updated_review: {
+          title: expect.any(String),
+          designer: expect.any(String),
+          owner: expect.any(String),
+          review_img_url: expect.any(String),
+          votes: expect.any(Number),
+          category: expect.any(String),
+          created_at: expect.any(String),
+          votes: 16,
+          review_id: expect.any(Number),
+          review_body: expect.any(String)
+        }
+      });
+     })
+})
+test('Returns 400 if missing property', () => {
+  return request(app)
+  .patch("/api/reviews/7")
+  .send({Suuuuuiiiii: 7})
+  .expect(400)
+  .then((res) => {
+    expect(res.body.msg).toEqual('Invalid request')
+  })
+  })
+  test('Returns 400 if no valid ID ', () => {
+    return request(app)
+    .patch("/api/reviews/Suuuuuiiiii")
+    .send({inc_votes: 7})
+    .expect(400)
+    .then((res) => {
+      expect(res.body.msg).toEqual('Bad request')
+    })
+    })
+    test('Returns 404 if no ID Match ', () => {
+      return request(app)
+      .patch("/api/reviews/999")
+      .send({inc_votes: 7})
+      .expect(404)
+      .then((res) => {
+        expect(res.body.msg).toEqual('Review not found')
+      })
+      })
+})
     
+ 
     
 
 
 
     
-
 
 
   
