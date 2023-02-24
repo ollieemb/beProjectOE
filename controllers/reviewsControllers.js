@@ -2,6 +2,7 @@ const {selectReviews} = require("../models/reviewsModels");
 const {selectReview} = require("../models/reviewsModels");
 const {selectComments} = require("../models/reviewsModels");
 const {addComment} = require("../models/reviewsModels"); 
+const {updateReviewVotes} = require("../models/reviewsModels");
 
 
 
@@ -57,6 +58,17 @@ exports.postComment = (request, response, next) => {
       .catch((err) => { 
         next(err)});
   };
+
+exports.patchReviews = (request, response, next) => {
+ const {review_id} = request.params;
+ const {inc_votes} = request.body;
   
+updateReviewVotes(review_id, inc_votes)
+    .then((updatedReview) => {
+     response.status(200).send({updated_review: updatedReview});
+     })
+     .catch((err) => next(err));
+  }
   
 
+ 

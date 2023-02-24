@@ -1,6 +1,5 @@
 
 exports.handleCustomErrors = (error, request, response, next) => {
-  console.log(error);
 
   if(error.status){
     response.status(error.status).send({msg: error.msg})
@@ -10,7 +9,6 @@ exports.handleCustomErrors = (error, request, response, next) => {
 }
 
 exports.handle500Statuses = (error, request, response, next) => {
-  console.log(error);
 response.status(500).send({ msg: "Error detected" });
 };
 
