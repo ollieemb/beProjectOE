@@ -252,7 +252,7 @@ test('Responds with 400 if missing body property', () => {
 
 })
 
-describe.only("PATCH /api/reviews/:review_id", () => {
+describe("PATCH /api/reviews/:review_id", () => {
   test(" returns a 200 status with the review item", () => {
     return request(app)
       .patch("/api/reviews/2")
