@@ -252,7 +252,7 @@ test('Responds with 400 if missing body property', () => {
 
 })
 
-describe("PATCH /api/reviews/:review_id", () => {
+describe.only("PATCH /api/reviews/:review_id", () => {
   test(" returns a 200 status with the review item", () => {
     return request(app)
       .patch("/api/reviews/2")
@@ -262,7 +262,7 @@ describe("PATCH /api/reviews/:review_id", () => {
         expect(typeof body).toBe("object");
       });
   });
-  test('responds 200 with the correct body of information', () => {
+  test('responds 200 with required data from reviews', () => {
     return request(app)
       .patch('/api/reviews/3')
       .send({ inc_votes: 1 })
