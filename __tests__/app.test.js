@@ -398,3 +398,106 @@ describe("GET /api/users", () => {
       })
   })     
 })
+
+describe("get/api/reviews", () => {
+  test("returns 200 and correct category info", () => {
+      return request(app)
+      .get("/api/reviews?category=dexterity")
+      .expect(200)
+      .then(({body}) => {
+          expect(Array.isArray(body.reviews)).toBe(true);
+          expect(body.reviews.length).toBe(1); 
+          expect(body.reviews).toBeSortedBy('created_at', {descending : true});
+          body.reviews.forEach(review => {
+            expect(review).toEqual(expect.objectContaining({
+              title: expect.any(String),
+              designer: expect.any(String),
+              owner: expect.any(String),
+              review_img_url: expect.any(String),
+              votes: expect.any(Number),
+              category: "dexterity", 
+              created_at: expect.any(String),
+              votes: expect.any(Number),
+              comment_count: expect.any(String)
+            }));
+          });
+      });
+  });
+  test("getReviews returns array of reviews and auto sorts by desc", () => {
+    return request(app)
+    .get("/api/reviews")
+    .expect(200)
+    .then(({body}) => {
+        expect(Array.isArray(body.reviews)).toBe(true);
+       expect(body.reviews.length).toBe(13);
+       expect(body.reviews).toBeSortedBy('created_at', {descending : true});
+       body.reviews.forEach(review => {
+        expect(review).toEqual(expect.objectContaining({
+            title: expect.any(String),
+            designer: expect.any(String),
+            owner: expect.any(String),
+            review_img_url: expect.any(String),
+            votes: expect.any(Number),
+            category: expect.any(String),
+            created_at: expect.any(String),
+            votes: expect.any(Number),
+            comment_count: expect.any(String)
+            }));
+    });
+})
+}) 
+test("getReviews returns reviews sorted by created_at in ascending order", () => {
+  return request(app)
+    .get("/api/reviews?sort_by=created_at&order=asc")
+    .expect(200)
+    .then(({ body }) => {
+      expect(Array.isArray(body.reviews)).toBe(true);
+      expect(body.reviews.length).toBe(13);
+      expect(body.reviews).toBeSortedBy("created_at", { ascending: true });
+})
+})
+test("getReviews returns reviews sorted by votes", () => {
+  return request(app)
+    .get("/api/reviews?sort_by=votes&order=asc")
+    .expect(200)
+    .then(({ body }) => {
+      expect(Array.isArray(body.reviews)).toBe(true);
+      expect(body.reviews.length).toBe(13);
+      expect(body.reviews).toBeSortedBy("votes", { ascending: true });
+})
+})
+test("getReviews returns reviews sorted by created_at in descending order by default", () => {
+  return request(app)
+    .get("/api/reviews")
+    .expect(200)
+    .then(({ body }) => {
+      expect(Array.isArray(body.reviews)).toBe(true);
+      expect(body.reviews).toBeSortedBy("created_at", { descending: true });
+    });
+});
+test("returns 400 when sort_by query is invalid", () => {
+  return request(app)
+    .get("/api/reviews?sort_by=invalid_query")
+    .expect(400)
+    .then(({ body }) => {
+      expect(body).toEqual({ error: "Invalid sortBy column" });
+    });
+});
+test("returns 400 when category query is invalid", () => {
+  return request(app)
+    .get("/api/reviews?category=dexterityyyyyy")
+    .expect(400)
+    .then(({ body }) => {
+      expect(body).toEqual({ error: "Invalid category" });
+    });
+});
+test("returns 400 when order query is invalid", () => {
+  return request(app)
+    .get("/api/reviews?order=invalid_order")
+    .expect(400)
+    .then(({ body }) => {
+      expect(body).toEqual({ msg: "Invalid query input" });
+    });
+});
+});
+
