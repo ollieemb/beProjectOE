@@ -7,14 +7,41 @@ const {selectUsers} = require("../models/reviewsModels");
 
 
 
+
 exports.getReviews = (request, response, next) => {
-    selectReviews().then((reviews) => {
+    const category = request.query.category;
+    const sortBy = request.query.sort_by || 'created_at';
+    const order = request.query.order || 'desc';
+  
+    const validCategories = [
+      'push-your-luck',
+      'roll-and-write',
+      'strategy',
+      'deck-building',
+      'hidden-roles',
+      'dexterity',
+      'engine-building',
+    ];
+  
+    const validSortByColumns = ['title', 'designer', 'owner', 'votes', 'category', 'created_at'];
+    if (!validSortByColumns.includes(sortBy)) {
+      return response.status(400).send({ error: `Invalid sortBy column` });
+    }
+  
+    if (category && !validCategories.includes(category)) {
+      return response.status(400).send({ error: `Invalid category`});
+    }
+  
+    if (order !== 'asc' && order !== 'desc') {
+      return response.status(400).send({ msg: "Invalid query input" });
+    }
+  
+    selectReviews(category, sortBy, order)
+      .then((reviews) => {
         response.status(200).send({ reviews });
-    })
-    .catch((error) => {
-        next(error);
-    })
-};
+      })
+      .catch(next);
+  };
 
 exports.getReviewID = (request, response, next) => {
     selectReview(request.params.review_id)

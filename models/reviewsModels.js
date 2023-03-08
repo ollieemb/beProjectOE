@@ -1,19 +1,63 @@
 const db = require("../db/connection");
 
+exports.selectReviews = (category, sortBy = "created_at", order = "desc") => {
+  const validSortByColumns = [
+    "title",
+    "designer",
+    "owner",
+    "votes",
+    "category",
+    "created_at",
+  ];
+  if (!validSortByColumns.includes(sortBy)) {
+    throw new Error(`Invalid sortBy column: ${sortBy}`);
+  }
+  if (order !== "asc" && order !== "desc") {
+    throw new Error(`Invalid order value: ${order}`);
+  }
 
-exports.selectReviews = () => {
-    let queryStr = 
-    `SELECT title, designer, owner, review_img_url, reviews.votes, category, reviews.created_at, COUNT (body) AS comment_count
-    FROM reviews
-    LEFT JOIN comments
-    ON reviews.review_ID = comments.review_id
-    GROUP BY reviews.review_ID
-    ORDER BY reviews.created_at DESC;
-    `
-return db.query(queryStr).then((result) => {
-return result.rows
-})
-}
+  let queryStr = `
+    SELECT
+      title,
+      designer,
+      owner,
+      review_img_url,
+      reviews.votes,
+      category,
+      reviews.created_at,
+      COUNT(body) AS comment_count
+    FROM
+      reviews
+      LEFT JOIN comments ON reviews.review_id = comments.review_id`;
+
+  const values = [];
+
+  if (category) {
+    queryStr += ` WHERE category = $1`;
+    values.push(category);
+  }
+
+  queryStr += `
+    GROUP BY
+      reviews.review_id`;
+
+  if (category) {
+    queryStr += `, category`;
+  }
+
+  queryStr += `
+    ORDER BY
+      ${sortBy} ${order}`;
+
+  return db.query(queryStr, values).then((result) => {
+    const rows = result.rows;
+    if (rows.length === 0 && category) {
+      throw new Error("Topic not found");
+    }
+    return rows;
+  });
+};
+
 
 exports.selectReview = (id) => {
     if (isNaN(id)) {
