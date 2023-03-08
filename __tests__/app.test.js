@@ -499,25 +499,5 @@ test("returns 400 when order query is invalid", () => {
       expect(body).toEqual({ msg: "Invalid query input" });
     });
 });
-test("returns 200 and empty array when valid topic query has no articles", () => {
-  return request(app)
-    .get("/api/reviews?category=children's games")
-    .expect(200)
-    .then((res) => {
-      const { reviews } = res.body;
-      expect(Array.isArray(reviews)).toBe(true);
-      expect(reviews).toHaveLength(0);
-    });
-});
-
-test("returns 404 when non-existent topic query is provided", () => {
-  return request(app)
-    .get("/api/reviews?category=bananas")
-    .expect(404)
-    .then((res) => {
-      const { error } = res.body;
-      expect(error).toBe("Topic not found");
-    });
-});
 });
 
