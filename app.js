@@ -8,6 +8,9 @@ const {getComments} = require("./controllers/reviewsControllers")
 const {postComment} = require("./controllers/reviewsControllers")
 const {patchReviews} = require("./controllers/reviewsControllers")
 const {getUsers} = require("./controllers/reviewsControllers")
+const cors = require('cors');
+
+app.use(cors());
 
 app.use(express.json())
 
