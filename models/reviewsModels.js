@@ -8,6 +8,7 @@ exports.selectReviews = (category, sortBy = "created_at", order = "desc") => {
     "votes",
     "category",
     "created_at",
+    
   ];
   if (!validSortByColumns.includes(sortBy)) {
     throw new Error(`Invalid sortBy column: ${sortBy}`);
@@ -18,6 +19,7 @@ exports.selectReviews = (category, sortBy = "created_at", order = "desc") => {
 
   let queryStr = `
     SELECT
+    reviews.review_id,
       title,
       designer,
       owner,
